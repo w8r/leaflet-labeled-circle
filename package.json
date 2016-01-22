@@ -1,0 +1,40 @@
+{
+  "name": "leaflet-labeled-circle",
+  "version": "0.0.1",
+  "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "start": "watchify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & serve -p 3002",
+    "build": "browserify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker -u leaflet ./index.js -o dist/L.LabeledCircle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w8r/leaflet-labeled-circle.git"
+  },
+  "keywords": [
+    "leaflet",
+    "label",
+    "circlemarker",
+    "svg",
+    "draggable"
+  ],
+  "author": "Alexander Milevski <info@w8r.name>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/w8r/leaflet-labeled-circle/issues"
+  },
+  "homepage": "https://github.com/w8r/leaflet-labeled-circle#readme",
+  "dependencies": {
+    "leaflet": "^0.7.3",
+    "leaflet-path-drag": "^0.1.10"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "faucet": "0.0.1",
+    "tape": "^4.4.0",
+    "watchify": "^3.7.0"
+  }
+}
