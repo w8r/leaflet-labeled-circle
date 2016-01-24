@@ -10,7 +10,7 @@ $ npm install --save leaflet-labeled-circle
 
 ```js
 var L = require('leaflet');
-var LabeledMarker = require('');
+var LabeledMarker = require('leaflet-labeled-circle');
 
 var map = L.map('map').setView(center, zoom);
 
