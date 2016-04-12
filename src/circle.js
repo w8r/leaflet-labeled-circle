@@ -5,9 +5,10 @@ module.exports = L.CircleMarker.extend({
   options: {
     textStyle: {
       color: '#fff',
-      fontSize: 12
+      fontSize: 12,
+      fontWeight: 300
     },
-    shiftY: 6,
+    shiftY: 7,
   },
 
 
@@ -20,7 +21,26 @@ module.exports = L.CircleMarker.extend({
    * @param  {Object=}  options
    */
   initialize: function(text, latlng, options) {
-    this._text = text;
+    /**
+     * @type {String}
+     */
+    this._text        = text;
+
+    /**
+     * @type {SVGTextElement}
+     */
+    this._textElement = null;
+
+    /**
+     * @type {TextNode}
+     */
+    this._textNode    = null;
+
+    /**
+     * @type {Object|Null}
+     */
+    this._textLayer   = null;
+
     L.CircleMarker.prototype.initialize.call(this, latlng, options);
   },
 
@@ -42,13 +62,41 @@ module.exports = L.CircleMarker.extend({
 
 
   /**
-   * Create text node in container
+   * Also bring text to front
+   * @override
    */
-  _initPath: function() {
-    L.CircleMarker.prototype._initPath.call(this);
-    this._textElement = this._createElement('text');
-    this.setText(this._text);
-    this._container.appendChild(this._textElement);
+  bringToFront: function() {
+    L.CircleMarker.prototype.bringToFront.call(this);
+    this._groupTextToPath();
+  },
+
+
+  /**
+   * @override
+   */
+  bringToBack: function() {
+    L.CircleMarker.prototype.bringToBack.call(this);
+    this._groupTextToPath();
+  },
+
+
+  /**
+   * Put text in the right position in the dom
+   */
+  _groupTextToPath: function() {
+    var path        = this._path;
+    var textElement = this._textElement;
+    var next        = path.nextSibling;
+    var parent      = path.parentNode;
+
+
+    if (textElement && parent) {
+      if (next && next !== textElement) {
+        parent.insertBefore(textElement, next);
+      } else {
+        parent.appendChild(textElement);
+      }
+    }
   },
 
 
@@ -57,8 +105,26 @@ module.exports = L.CircleMarker.extend({
    */
   _updatePath: function() {
     L.CircleMarker.prototype._updatePath.call(this);
-
     this._updateTextPosition();
+  },
+
+
+  /**
+   * @override
+   */
+  _transform: function(matrix) {
+    L.CircleMarker.prototype._transform.call(this, matrix);
+
+    // wrap textElement with a fake layer for renderer
+    // to be able to transform it
+    this._textLayer = this._textLayer || { _path: this._textElement };
+    if (matrix) {
+      this._renderer.transformPath(this._textLayer, matrix);
+    } else {
+      this._renderer._resetTransformPath(this._textLayer);
+      this._updateTextPosition();
+      this._textLayer = null;
+    }
   },
 
 
@@ -68,8 +134,20 @@ module.exports = L.CircleMarker.extend({
    */
   onAdd: function(map) {
     L.CircleMarker.prototype.onAdd.call(this, map);
+    this._initText();
     this._updateTextPosition();
+    this.setStyle();
     return this;
+  },
+
+
+  /**
+   * Create and insert text
+   */
+  _initText: function() {
+    this._textElement = L.SVG.create('text');
+    this.setText(this._text);
+    this._renderer._rootGroup.appendChild(this._textElement);
   },
 
 
@@ -78,21 +156,23 @@ module.exports = L.CircleMarker.extend({
    */
   _updateTextPosition: function() {
     var textElement = this._textElement;
-    var bbox = textElement.getBBox();
-    var textPosition = this._point.subtract(
-      L.point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2));
+    if (textElement) {
+      var bbox = textElement.getBBox();
+      var textPosition = this._point.subtract(
+        L.point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2));
 
-    textElement.setAttribute('x', textPosition.x);
-    textElement.setAttribute('y', textPosition.y);
+      textElement.setAttribute('x', textPosition.x);
+      textElement.setAttribute('y', textPosition.y);
+      this._groupTextToPath();
+    }
   },
 
 
   /**
    * Set text style
    */
-  _updateStyle: function() {
-    L.CircleMarker.prototype._updateStyle.call(this);
-
+  setStyle: function(style) {
+    L.CircleMarker.prototype.setStyle.call(this, style);
     var styles = this.options.textStyle;
     for (var prop in styles) {
       if (styles.hasOwnProperty(prop)) {

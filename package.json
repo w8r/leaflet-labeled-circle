@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
+    "lint": "eslint ./src/",
     "start": "watchify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & serve -p 3002",
-    "build": "browserify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker -u leaflet ./index.js -o dist/L.LabeledCircle.js"
+    "build-js": "browserify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker -u leaflet ./index.js -o dist/L.LabeledCircle-src.js",
+    "compress": "uglifyjs ./dist/L.LabeledCircle-src.js -o ./dist/L.LabeledCircle.js -m --comments",
+    "build": "npm run lint && npm run build-js && npm run compress"
   },
   "repository": {
     "type": "git",
@@ -26,15 +29,17 @@
   },
   "homepage": "https://github.com/w8r/leaflet-labeled-circle#readme",
   "dependencies": {
-    "leaflet": "^0.7.3",
-    "leaflet-path-drag": "^0.1.10"
+    "leaflet": "^1.0.0-beta.2",
+    "leaflet-path-drag": "^1.0.0-beta.3"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "eslint": "^2.7.0",
     "faucet": "0.0.1",
     "tape": "^4.4.0",
+    "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0"
   }
 }

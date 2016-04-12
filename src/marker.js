@@ -31,7 +31,7 @@ var LabeledMarker = L.FeatureGroup.extend({
 
     markerOptions: {
       color: '#f00',
-      fillOpacity: 0.8,
+      fillOpacity: 0.75,
       draggable: true,
       radius: 15
     },
@@ -43,8 +43,9 @@ var LabeledMarker = L.FeatureGroup.extend({
 
     lineOptions: {
       color: '#f00',
-      dashArray: [5, 15],
-      lineCap: 'square'
+      dashArray: [2, 6],
+      lineCap: 'square',
+      weight: 2
     }
 
   },
@@ -95,6 +96,12 @@ var LabeledMarker = L.FeatureGroup.extend({
      * @type {L.Polyline}
      */
     this._line = null;
+
+
+    /**
+     * @type {L.Point}
+     */
+    this._initialDistance = null;
 
     this._createLayers();
     L.LayerGroup.prototype.initialize.call(this,
@@ -155,7 +162,8 @@ var LabeledMarker = L.FeatureGroup.extend({
       L.Util.extend({},
         LabeledMarker.prototype.options.markerOptions,
         opts.markerOptions)
-    ).on('drag', this._onMarkerDrag, this);
+    ).on('drag',      this._onMarkerDrag,      this)
+     .on('dragstart', this._onMarkerDragStart, this);
 
     this._anchor = new L.CircleMarker(this._latlng,
       L.Util.extend({}, LabeledMarker.prototype.options.anchorOptions,
@@ -168,11 +176,24 @@ var LabeledMarker = L.FeatureGroup.extend({
 
 
   /**
+   * Store shift to be precise while dragging
+   * @param  {Event} evt
+   */
+  _onMarkerDragStart: function(evt) {
+    this._initialDistance = L.DomEvent.getMousePosition(evt)
+      .subtract(this._map.latLngToContainerPoint(this._marker.getLatLng()));
+    //L.Util.requestAnimFrame(this._marker.bringToFront, this._marker);
+  },
+
+
+  /**
    * Line dragging
    * @param  {DragEvent} evt
    */
   _onMarkerDrag: function(evt) {
-    this._line.setLatLngs([evt.target.getLatLng(), this._latlng]);
+    var latlng = this._map.containerPointToLatLng(
+      L.DomEvent.getMousePosition(evt)._subtract(this._initialDistance));
+    this._line.setLatLngs([latlng, this._latlng]);
   }
 
 });
@@ -180,4 +201,4 @@ var LabeledMarker = L.FeatureGroup.extend({
 module.exports = L.LabeledCircleMarker = LabeledMarker;
 L.labeledCircleMarker = function(latlng, feature, options) {
   return new LabeledMarker(latlng, feature, options);
-}
+};
