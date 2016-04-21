@@ -173,14 +173,16 @@ module.exports = L.CircleMarker.extend({
    */
   setStyle: function(style) {
     L.CircleMarker.prototype.setStyle.call(this, style);
-    var styles = this.options.textStyle;
-    for (var prop in styles) {
-      if (styles.hasOwnProperty(prop)) {
-        var styleProp = prop;
-        if (prop === 'color') {
-          styleProp = 'stroke';
+    if (this._textElement) {
+      var styles = this.options.textStyle;
+      for (var prop in styles) {
+        if (styles.hasOwnProperty(prop)) {
+          var styleProp = prop;
+          if (prop === 'color') {
+            styleProp = 'stroke';
+          }
+          this._textElement.style[styleProp] = styles[prop];
         }
-        this._textElement.style[styleProp] = styles[prop];
       }
     }
   }
