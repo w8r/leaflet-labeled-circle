@@ -22,7 +22,8 @@ var marker1 = global.marker1 = new LabeledMarker(pos1.slice().reverse(), {
     "coordinates": pos1
   }
 }, {
-  markerOptions: { color: '#050' }
+  markerOptions: { color: '#050' },
+  interactive: true
 }).addTo(map);
 
 var pos2 = [ 114.14657592773438, 22.33927931468312];
@@ -39,6 +40,8 @@ var marker2 = global.marker2 = new LabeledMarker(pos2.slice().reverse(), {
     "type": "Point",
     "coordinates": pos2
   }
+}, {
+  interactive: true
 }).addTo(map);
 
 var pos3 = [114.12872314453125, 22.395157990290755];

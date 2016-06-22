@@ -159,11 +159,14 @@ var LabeledMarker = L.FeatureGroup.extend({
     var text = opts.getLabelText(this, this.feature);
 
     this._marker = new Circle(text, pos,
-      L.Util.extend({},
+      L.Util.extend({
+        interactive: this.options.interactive
+      },
         LabeledMarker.prototype.options.markerOptions,
         opts.markerOptions)
     ).on('drag',      this._onMarkerDrag,      this)
-     .on('dragstart', this._onMarkerDragStart, this);
+     .on('dragstart', this._onMarkerDragStart, this)
+     .on('dragend',   this._onMarkerDragEnd,   this);
 
     this._anchor = new L.CircleMarker(this._latlng,
       L.Util.extend({}, LabeledMarker.prototype.options.anchorOptions,
@@ -182,6 +185,7 @@ var LabeledMarker = L.FeatureGroup.extend({
   _onMarkerDragStart: function(evt) {
     this._initialDistance = L.DomEvent.getMousePosition(evt)
       .subtract(this._map.latLngToContainerPoint(this._marker.getLatLng()));
+    this.fire('label:' + evt.type, evt);
     //L.Util.requestAnimFrame(this._marker.bringToFront, this._marker);
   },
 
@@ -194,6 +198,12 @@ var LabeledMarker = L.FeatureGroup.extend({
     var latlng = this._map.containerPointToLatLng(
       L.DomEvent.getMousePosition(evt)._subtract(this._initialDistance));
     this._line.setLatLngs([latlng, this._latlng]);
+    this.fire('label:' + evt.type, evt);
+  },
+
+
+  _onMarkerDragEnd: function(evt) {
+    this.fire('label:' + evt.type, evt);
   }
 
 });

@@ -4,12 +4,13 @@
   "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "browserify --transform [ babelify --presets [ es2015 ] ] ./test/*.test.js | tap-closer | smokestack | tap-status",
     "lint": "eslint ./src/",
     "start": "watchify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & serve -p 3002",
     "build-js": "browserify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker -u leaflet ./index.js -o dist/L.LabeledCircle-src.js",
     "compress": "uglifyjs ./dist/L.LabeledCircle-src.js -o ./dist/L.LabeledCircle.js -m --comments",
-    "build": "npm run lint && npm run build-js && npm run compress"
+    "build": "npm run lint && npm run build-js && npm run compress",
+    "prepublish": "npm run build && npm run test"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,9 @@
     "browserify": "^13.0.0",
     "eslint": "^2.7.0",
     "faucet": "0.0.1",
+    "smokestack": "^3.4.1",
+    "tap-closer": "^1.0.0",
+    "tap-status": "^1.0.1",
     "tape": "^4.4.0",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0"
