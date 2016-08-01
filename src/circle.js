@@ -185,5 +185,23 @@ module.exports = L.CircleMarker.extend({
         }
       }
     }
+  },
+
+
+  /**
+   * Remove text
+   */
+  onRemove: function(map) {
+    if (this._textElement) {
+      if (this._textElement.parentNode) {
+        this._textElement.parentNode.removeChild(this._textElement);
+      }
+      this._textElement = null;
+      this._textNode = null;
+      this._textLayer = null;
+    }
+
+    return L.CircleMarker.prototype.onRemove.call(this, map);
   }
+
 });

@@ -39,6 +39,7 @@
     "browserify": "^13.0.0",
     "eslint": "^2.7.0",
     "faucet": "0.0.1",
+    "serve": "1.4.0",
     "smokestack": "^3.4.1",
     "tap-closer": "^1.0.0",
     "tap-status": "^1.0.1",

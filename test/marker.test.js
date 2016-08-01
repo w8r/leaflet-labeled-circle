@@ -68,6 +68,15 @@ tape('L.LabeledCircleMarker', (t) => {
        marker._line.getLatLngs()[1].equals(labelLatLng),
        'line conntection is correct');
 
+    // Check DOM
+    let els = document.querySelectorAll('svg > g > *');
+    t.equals(els.length, 4, 'has all DOM nodes rendered');
+
+    // Remove layer & check DOM
+    map.removeLayer(marker);
+    els = document.querySelectorAll('svg > g > *');
+    t.equals(els.length, 0, 'DOM is clean after remove');
+
     t.end();
   });
 
