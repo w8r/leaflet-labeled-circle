@@ -3,6 +3,14 @@ import L from 'leaflet';
 
 import Marker from '../';
 
+const createMap = () => {
+  let container = L.DomUtil.create('div', 'map', document.body);
+  let map = L.map(container).setView([22.42658, 114.1452], 11);
+  return map;
+};
+
+let map;
+
 function triggerEvent (element, type, options = {}) {
   var evt = new MouseEvent(type, {
     'view': window,
@@ -23,13 +31,14 @@ function triggerEvent (element, type, options = {}) {
   return evt;
 }
 
+tape('setup', (t) => {
+  map = createMap();
+  t.end();
+});
+
 tape('L.LabeledCircleMarker', (t) => {
 
-  const createMap = () => {
-    let container = L.DomUtil.create('div', 'map', document.body);
-    let map = L.map(container).setView([22.42658, 114.1452], 11);
-    return map;
-  };
+
 
   t.test('exposed', (t) => {
     t.ok(L.LabeledCircleMarker, 'L.LabeledCircleMarker is exposed');
@@ -39,7 +48,6 @@ tape('L.LabeledCircleMarker', (t) => {
 
 
   t.test('basic render', (t) => {
-    let map = createMap();
     let center = map.getCenter();
     let labelPos = [
       center.lng + center.lng * 0.001,
@@ -69,71 +77,44 @@ tape('L.LabeledCircleMarker', (t) => {
        'line conntection is correct');
 
     // Check DOM
-    let els = document.querySelectorAll('svg > g > *');
+    const els = document.querySelectorAll('svg > g > *');
     t.equals(els.length, 4, 'has all DOM nodes rendered');
+
+    map.removeLayer(marker);
+
+    t.end();
+  });
+
+
+  t.test('remove', (t) => {
+    let center = map.getCenter();
+    let labelPos = [
+      center.lng + center.lng * 0.001,
+      center.lat + center.lat * 0.001
+    ];
+    let marker = new Marker(center, {
+      type: 'Feature',
+      geometry: {
+        type: 'Point'
+      },
+      properties: {
+        labelPosition: labelPos
+      }
+    }).addTo(map);
 
     // Remove layer & check DOM
     map.removeLayer(marker);
-    els = document.querySelectorAll('svg > g > *');
+    const els = document.querySelectorAll('svg > g > *');
     t.equals(els.length, 0, 'DOM is clean after remove');
 
     t.end();
   });
 
 
-  // t.test('dragging', (t) => {
-  //   t.end();
-  // });
+  t.end();
+});
 
-  // t.test('exposed', (t) => {
-  //   t.ok(L.Map.SelectArea, 'exposed');
-  //   t.equal(L.Map.prototype.options.selectArea, false, 'in map options');
-  //   t.end();
-  // });
-
-  // t.test('interaction', (t) => {
-  //   t.plan(4);
-
-  //   let map = createMap();
-
-  //   map.on({
-  //     'areaselecttoggled': (e) => {
-  //       t.pass('toggled');
-  //     },
-  //     'areaselected': (e) => {
-  //       t.ok(e.bounds, 'bounds received');
-  //     }
-  //   });
-  //   t.ok(map.selectArea, 'handler instance');
-  //   map.selectArea.enable();
-
-  //   // otherwise tests are broken,
-  //   // draggable takes over somehow and
-  //   // cannot work with fake events
-  //   map.dragging.disable();
-
-  //   triggerEvent(map.selectArea._container, 'mousedown', {
-  //     clientX: 100,
-  //     clientY:100,
-  //     ctrlKey: true,
-  //     // target: map._container,
-  //     which: 1 // button
-  //   });
-
-  //   setTimeout(() => {
-  //     t.ok(map.selectArea._startLayerPoint, 'started selection');
-
-  //     triggerEvent(document, 'mousemove', {
-  //       clientX: 200,
-  //       clientY: 200
-  //     });
-
-  //     triggerEvent(document, 'mouseup', {
-  //       clientX: 201,
-  //       clientY: 201
-  //     });
-  //   }, 100);
-  // });
-
+tape('teardown', (t) => {
+  map.remove();
   t.end();
 });
