@@ -1,6 +1,6 @@
 {
   "name": "leaflet-labeled-circle",
-  "version": "1.0.0-beta.4",
+  "version": "0.1.0",
   "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
   "main": "index.js",
   "scripts": {
