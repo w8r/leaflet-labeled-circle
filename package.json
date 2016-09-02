@@ -1,12 +1,16 @@
 {
   "name": "leaflet-labeled-circle",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "watchify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & serve -p 3002",
-    "build": "browserify -v -d -t [ babelify --presets [ es2015 ] ] -s L.LabeledCircleMarker -u leaflet ./index.js -o dist/L.LabeledCircle.js"
+    "test": "browserify ./test/*.test.js | tap-closer | smokestack | tap-status",
+    "lint": "eslint ./src/",
+    "start": "watchify -v -d -s L.LabeledCircleMarker --external leaflet demo/js/index.js -o demo/js/build.js & npm run server",
+    "server": "http-server -p 3002",
+    "build-js": "browserify -v -d -s L.LabeledCircleMarker --external leaflet ./index.js -o dist/L.LabeledCircle-src.js",
+    "compress": "uglifyjs ./dist/L.LabeledCircle-src.js -o ./dist/L.LabeledCircle.js -m --comments",
+    "build": "npm run lint && npm run build-js && npm run compress"
   },
   "repository": {
     "type": "git",
@@ -25,16 +29,39 @@
     "url": "https://github.com/w8r/leaflet-labeled-circle/issues"
   },
   "homepage": "https://github.com/w8r/leaflet-labeled-circle#readme",
+  "browserify": {
+    "transform": [
+      "browserify-shim",
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  },
+  "browserify-shim": {
+    "leaflet": "global:L"
+  },
   "dependencies": {
-    "leaflet": "^0.7.3",
-    "leaflet-path-drag": "^0.1.10"
+    "leaflet-path-drag": "^0.1.15"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "browserify": "^13.0.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "browserify-shim": "^3.8.12",
+    "eslint": "^3.4.0",
     "faucet": "0.0.1",
-    "tape": "^4.4.0",
+    "http-server": "^0.9.0",
+    "leaflet": "^0.7.3",
+    "smokestack": "^3.4.1",
+    "tap-closer": "^1.0.0",
+    "tap-status": "^1.0.1",
+    "tape": "^4.6.0",
+    "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0"
   }
 }
