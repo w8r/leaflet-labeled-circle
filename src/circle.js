@@ -1,5 +1,3 @@
-var L = require('leaflet');
-
 module.exports = L.CircleMarker.extend({
 
   options: {

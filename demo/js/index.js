@@ -1,4 +1,3 @@
-var L = require('leaflet');
 var LabeledMarker = require('../..');
 
 var map = global.map = new L.Map('map', {}).setView([22.42658, 114.1952], 10);

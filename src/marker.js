@@ -180,4 +180,4 @@ var LabeledMarker = L.FeatureGroup.extend({
 module.exports = L.LabeledCircleMarker = LabeledMarker;
 L.labeledCircleMarker = function(latlng, feature, options) {
   return new LabeledMarker(latlng, feature, options);
-}
+};
