@@ -1,6 +1,6 @@
 var L = require('leaflet');
 
-module.exports = L.CircleMarker.extend({
+var Circle = module.exports = L.CircleMarker.extend({
 
   options: {
     textStyle: {
@@ -205,3 +205,9 @@ module.exports = L.CircleMarker.extend({
   }
 
 });
+
+
+L.TextCircle = Circle;
+L.textCircle = function (text, latlng, options) {
+  return new Circle(text, latlng, options);
+};
