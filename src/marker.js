@@ -31,7 +31,7 @@ var LabeledMarker = L.FeatureGroup.extend({
 
     markerOptions: {
       color: '#f00',
-      fillOpacity: 0.75,
+      fillOpacity: 0.8,
       draggable: true,
       radius: 15
     },
@@ -43,9 +43,8 @@ var LabeledMarker = L.FeatureGroup.extend({
 
     lineOptions: {
       color: '#f00',
-      dashArray: [2, 6],
-      lineCap: 'square',
-      weight: 2
+      dashArray: [5, 15],
+      lineCap: 'square'
     }
 
   },
@@ -96,12 +95,6 @@ var LabeledMarker = L.FeatureGroup.extend({
      * @type {L.Polyline}
      */
     this._line = null;
-
-
-    /**
-     * @type {L.Point}
-     */
-    this._initialDistance = null;
 
     this._createLayers();
     L.LayerGroup.prototype.initialize.call(this,
@@ -159,14 +152,10 @@ var LabeledMarker = L.FeatureGroup.extend({
     var text = opts.getLabelText(this, this.feature);
 
     this._marker = new Circle(text, pos,
-      L.Util.extend({
-        interactive: this.options.interactive
-      },
+      L.Util.extend({},
         LabeledMarker.prototype.options.markerOptions,
         opts.markerOptions)
-    ).on('drag',      this._onMarkerDrag,      this)
-     .on('dragstart', this._onMarkerDragStart, this)
-     .on('dragend',   this._onMarkerDragEnd,   this);
+    ).on('drag', this._onMarkerDrag, this);
 
     this._anchor = new L.CircleMarker(this._latlng,
       L.Util.extend({}, LabeledMarker.prototype.options.anchorOptions,
@@ -179,31 +168,11 @@ var LabeledMarker = L.FeatureGroup.extend({
 
 
   /**
-   * Store shift to be precise while dragging
-   * @param  {Event} evt
-   */
-  _onMarkerDragStart: function(evt) {
-    this._initialDistance = L.DomEvent.getMousePosition(evt)
-      .subtract(this._map.latLngToContainerPoint(this._marker.getLatLng()));
-    this.fire('label:' + evt.type, evt);
-    //L.Util.requestAnimFrame(this._marker.bringToFront, this._marker);
-  },
-
-
-  /**
    * Line dragging
    * @param  {DragEvent} evt
    */
   _onMarkerDrag: function(evt) {
-    var latlng = this._map.containerPointToLatLng(
-      L.DomEvent.getMousePosition(evt)._subtract(this._initialDistance));
-    this._line.setLatLngs([latlng, this._latlng]);
-    this.fire('label:' + evt.type, evt);
-  },
-
-
-  _onMarkerDragEnd: function(evt) {
-    this.fire('label:' + evt.type, evt);
+    this._line.setLatLngs([evt.target.getLatLng(), this._latlng]);
   }
 
 });
