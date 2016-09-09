@@ -9,6 +9,24 @@ const createMap = () => {
   return map;
 };
 
+const createMarker = (map) => {
+  let center = map.getCenter();
+  let labelPos = [
+    center.lng + center.lng * 0.001,
+    center.lat + center.lat * 0.001
+  ];
+  let marker = new Marker(center, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point'
+    },
+    properties: {
+      labelPosition: labelPos
+    }
+  }).addTo(map);
+  return marker;
+};
+
 let map;
 
 function triggerEvent (element, type, options = {}) {
@@ -87,26 +105,61 @@ tape('L.LabeledCircleMarker', (t) => {
 
 
   t.test('remove', (t) => {
-    let center = map.getCenter();
-    let labelPos = [
-      center.lng + center.lng * 0.001,
-      center.lat + center.lat * 0.001
-    ];
-    let marker = new Marker(center, {
-      type: 'Feature',
-      geometry: {
-        type: 'Point'
-      },
-      properties: {
-        labelPosition: labelPos
-      }
-    }).addTo(map);
+    let marker = createMarker(map);
 
     // Remove layer & check DOM
     map.removeLayer(marker);
     const els = document.querySelectorAll('svg > g > *');
     t.equals(els.length, 0, 'DOM is clean after remove');
 
+    t.end();
+  });
+
+  t.test('toGeoJSON', (t) => {
+    let marker = createMarker(map);
+    t.deepEqual(marker.toGeoJSON(), {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [ 114.1452, 22.42658 ] },
+      properties: { labelPosition: [ 114.2593452, 22.449006580000002 ] }
+    }, 'geojson feature');
+    var gc = marker.toGeoJSON(true);
+    var f = marker.toGeoJSON();
+
+    t.test('Geometry collection', (t) => {
+      t.deepEqual(gc.properties, f.properties, 'properties copied');
+      t.equal(gc.geometry.type, 'GeometryCollection', 'correct geometry type');
+      t.equal(gc.geometry.geometries.length, 3, 'geometries count');
+      t.deepEqual(gc.geometry.geometries[0], {
+        "type": "Point",
+        "coordinates": [
+          114.1452,
+          22.42658
+        ]
+      }, 'point in collection');
+      t.deepEqual(gc.geometry.geometries[1], {
+        "type": "LineString",
+        "coordinates": [
+          [
+            114.1452,
+            22.42658
+          ],
+          [
+            114.2593452,
+            22.449006580000002
+          ]
+        ]
+      }, 'line string in collection');
+
+      t.deepEqual(gc.geometry.geometries[2], {
+        "type": "Point",
+        "coordinates": [
+          114.2593452,
+          22.449006580000002
+        ]
+      }, 'label point in collection');
+      t.end();
+    });
+    map.removeLayer(marker);
     t.end();
   });
 

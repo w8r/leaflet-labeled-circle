@@ -129,14 +129,15 @@ var LabeledMarker = L.FeatureGroup.extend({
    * Serialize
    * @return {Object}
    */
-  toGeoJSON: function() {
+  toGeoJSON: function(geometryCollection) {
     var feature = L.GeoJSON.getFeature(this, {
       type: 'Point',
       coordinates: L.GeoJSON.latLngToCoords(this._anchor.getLatLng())
     });
     feature.properties[this.options.labelPositionKey] =
       L.GeoJSON.latLngToCoords(this._marker.getLatLng());
-    return feature;
+    return geometryCollection ?
+      L.LabeledCircleMarker.toGeometryCollection(feature, this.options.labelPositionKey) : feature;
   },
 
 
@@ -207,6 +208,47 @@ var LabeledMarker = L.FeatureGroup.extend({
   }
 
 });
+
+
+/**
+ * @param  {Object} feature
+ * @param  {String=} key
+ * @return {Object}
+ */
+function toGeometryCollection(feature, key) {
+  key = key || 'labelPosition';
+  var anchorPos = feature.geometry.coordinates.slice();
+  var labelPos  = feature.properties[key];
+
+  if (!labelPos) throw new Error('No label position set');
+
+  labelPos = labelPos.slice();
+  var geometries = [{
+    type: 'Point',
+    coordinates: anchorPos
+  }, {
+    type: 'LineString',
+    coordinates: [
+      anchorPos.slice(),
+      labelPos
+    ]
+  }, {
+    type: 'Point',
+    coordinates: labelPos.slice()
+  }];
+
+  return {
+    type: 'Feature',
+    properties: feature.properties,
+    bbox: feature.bbox,
+    geometry: {
+      type: 'GeometryCollection',
+      geometries: geometries
+    }
+  };
+}
+
+LabeledMarker.toGeometryCollection = toGeometryCollection;
 
 module.exports = L.LabeledCircleMarker = LabeledMarker;
 L.labeledCircleMarker = function(latlng, feature, options) {

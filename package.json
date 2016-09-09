@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "browserify ./test/*.test.js | tap-closer | smokestack | tap-status",
+    "test:watch": "nodemon --exec 'npm test'",
     "lint": "eslint ./src/",
     "start": "watchify -v -d -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & npm run server",
     "server": "http-server -p 3002",
@@ -58,6 +59,7 @@
     "faucet": "0.0.1",
     "http-server": "^0.9.0",
     "leaflet": "rc",
+    "nodemon": "^1.10.2",
     "smokestack": "^3.4.1",
     "tap-closer": "^1.0.0",
     "tap-status": "^1.0.1",
