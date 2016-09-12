@@ -62,6 +62,14 @@ var Circle = module.exports = L.CircleMarker.extend({
 
 
   /**
+   * @return {String}
+   */
+  getText: function () {
+    return this._text;
+  },
+
+
+  /**
    * Also bring text to front
    * @override
    */
@@ -146,6 +154,7 @@ var Circle = module.exports = L.CircleMarker.extend({
    */
   _initText: function() {
     this._textElement = L.SVG.create('text');
+    console.log('init', this._text);
     this.setText(this._text);
     this._renderer._rootGroup.appendChild(this._textElement);
   },

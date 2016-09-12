@@ -12,10 +12,6 @@
     "block-scoped-var": 2,
     "camelcase": 1,
     "comma-style": 2,
-    "curly": [
-      2,
-      "all"
-    ],
     "dot-notation": 0,
     "eqeqeq": [
       2,
