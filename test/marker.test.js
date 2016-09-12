@@ -21,7 +21,8 @@ const createMarker = (map) => {
       type: 'Point'
     },
     properties: {
-      labelPosition: labelPos
+      labelPosition: labelPos,
+      text: 5
     }
   }).addTo(map);
   return marker;
@@ -120,15 +121,20 @@ tape('L.LabeledCircleMarker', (t) => {
     t.deepEqual(marker.toGeoJSON(), {
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [ 114.1452, 22.42658 ] },
-      properties: { labelPosition: [ 114.2593452, 22.449006580000002 ] }
+      properties: {
+        labelPosition: [ 114.2593452, 22.449006580000002 ],
+        text: 5
+      }
     }, 'geojson feature');
     var gc = marker.toGeoJSON(true);
     var f = marker.toGeoJSON();
 
     t.test('Geometry collection', (t) => {
-      t.deepEqual(gc.properties, f.properties, 'properties copied');
+      t.deepEqual(gc.properties, L.Util.extend(f.properties, {
+        geometriesTypes: [ 'anchor', 'connection', 'label', 'textbox' ]
+      }), 'properties copied');
       t.equal(gc.geometry.type, 'GeometryCollection', 'correct geometry type');
-      t.equal(gc.geometry.geometries.length, 3, 'geometries count');
+      t.equal(gc.geometry.geometries.length, 4, 'geometries count');
       t.deepEqual(gc.geometry.geometries[0], {
         "type": "Point",
         "coordinates": [

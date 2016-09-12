@@ -136,8 +136,10 @@ var LabeledMarker = L.FeatureGroup.extend({
     });
     feature.properties[this.options.labelPositionKey] =
       L.GeoJSON.latLngToCoords(this._marker.getLatLng());
+    feature.properties.text = this._marker.getText();
     return geometryCollection ?
-      L.LabeledCircleMarker.toGeometryCollection(feature, this.options.labelPositionKey) : feature;
+      L.LabeledCircleMarker
+        .toGeometryCollection(feature, this.options.labelPositionKey) : feature;
   },
 
 
@@ -235,11 +237,16 @@ function toGeometryCollection(feature, key) {
   }, {
     type: 'Point',
     coordinates: labelPos.slice()
+  }, {
+    type: 'Point',
+    coordinates: labelPos.slice()
   }];
 
   return {
     type: 'Feature',
-    properties: feature.properties,
+    properties: L.Util.extend({}, feature.properties, {
+      geometriesTypes: ['anchor', 'connection', 'label', 'textbox']
+    }),
     bbox: feature.bbox,
     geometry: {
       type: 'GeometryCollection',
