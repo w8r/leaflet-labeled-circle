@@ -7,9 +7,9 @@
     "test": "browserify ./test/*.test.js | tap-closer | smokestack | tap-status",
     "test:watch": "nodemon --exec 'npm test'",
     "lint": "eslint ./src/",
-    "start": "watchify -v -d -s L.LabeledCircleMarker demo/js/index.js -o demo/js/build.js & npm run server",
+    "start": "watchify -v -d demo/js/index.js -o demo/js/build.js & npm run server",
     "server": "http-server -p 3002",
-    "build-js": "browserify -v -d -s L.LabeledCircleMarker --external leaflet ./index.js -o dist/L.LabeledCircle-src.js",
+    "build-js": "browserify -v -d --external leaflet ./index.js -o dist/L.LabeledCircle-src.js",
     "compress": "uglifyjs ./dist/L.LabeledCircle-src.js -o ./dist/L.LabeledCircle.js -m --comments",
     "build": "npm run lint && npm run build-js && npm run compress",
     "prepublish": "npm run build && npm run test"
