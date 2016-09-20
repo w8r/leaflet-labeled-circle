@@ -104,7 +104,43 @@ marker = new LabeledMarker(latlng, feature, {
   labelPositionKey: 'labelPosition'
 });
 console.log(marker.toGeoJSON(true));
-
+{
+  "type": "Feature",
+  "properties": {
+    "text": 12,
+    "labelPosition": [lon2, lat2],
+    "geometriesTypes": [
+      "anchor",
+      "connection",
+      "label",
+      "textbox"
+    ]
+  },
+  "geometry": {
+    "type": "GeometryCollection",
+    "geometries": [
+      {
+        "type": "Point",
+        "coordinates": [lon1, lat1]
+      },
+      {
+        "type": "LineString",
+        "coordinates": [
+          [lon1, lat1],
+          [lon2, lat2]
+        ]
+      },
+      {
+        "type": "Point",
+        "coordinates": [lon2, lat2]
+      },
+      {
+        "type": "Point",
+        "coordinates": [lon2, lat2]
+      }
+    ]
+  }
+}
 ```
 
 
