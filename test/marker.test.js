@@ -1,15 +1,23 @@
 import tape  from 'tape';
 import L from 'leaflet';
+import Hand from 'prosthetic-hand';
 
 import Marker from '../';
 
+let link = document.createElement('link');
+link.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.3/leaflet.css';
+link.rel = 'stylesheet';
+document.head.appendChild(link);
+
 const createMap = () => {
   let container = L.DomUtil.create('div', 'map', document.body);
+  container.style.width =
+  container.style.height = '600px';
   let map = L.map(container).setView([22.42658, 114.1452], 11);
   return map;
 };
 
-const createMarker = (map) => {
+const createMarker = (map, options = {}) => {
   let center = map.getCenter();
   let labelPos = [
     center.lng + center.lng * 0.001,
@@ -24,7 +32,7 @@ const createMarker = (map) => {
       labelPosition: labelPos,
       text: 5
     }
-  }).addTo(map);
+  }, options).addTo(map);
   return marker;
 };
 
@@ -56,8 +64,6 @@ tape('setup', (t) => {
 });
 
 tape('L.LabeledCircleMarker', (t) => {
-
-
 
   t.test('exposed', (t) => {
     t.ok(L.LabeledCircleMarker, 'L.LabeledCircleMarker is exposed');
@@ -167,6 +173,65 @@ tape('L.LabeledCircleMarker', (t) => {
     });
     map.removeLayer(marker);
     t.end();
+  });
+
+
+  t.test('Dragging', (t) => {
+
+    t.test('Interaction', (t) => {
+      let marker = createMarker(map);
+      let center = map.getCenter();
+
+      t.plan(5);
+      const h = new Hand({
+        onStop: () => {
+          let c = map.getCenter();
+          t.ok(center.equals(map.getCenter()), 'map center did not change');
+        }
+      });
+      const mouse = h.growFinger('mouse');
+
+      const labelPos = marker.toGeoJSON().properties.labelPosition;
+      marker
+        .once('label:dragstart', (evt) => t.pass('label drag start emitted'))
+        .once('label:drag', (evt) => t.pass('label drag emitted'))
+        .once('label:dragend', (evt) => {
+          t.pass('label dragend emitted');
+          let pos = marker.toGeoJSON().properties.labelPosition;
+          t.notDeepEqual(pos, labelPos, 'label position changed');
+        });
+
+      mouse.moveTo(470, 280, 0)
+        .wait(500)
+        .down().moveBy(100, 0, 1000).up().wait(500);
+    });
+
+    t.test('Non-draggable', (t) => {
+      let marker = createMarker(map, { draggable: false });
+      let center = map.getCenter();
+
+      t.plan(1);
+      const h = new Hand({
+        onStop: () => {
+          let c = map.getCenter();
+          t.notOk(center.equals(map.getCenter()), 'map center did not change');
+        }
+      });
+      const mouse = h.growFinger('mouse');
+
+      const labelPos = marker.toGeoJSON().properties.labelPosition;
+      marker
+        .once('label:dragstart', (evt) => t.fail('label drag start emitted'))
+        .once('label:drag', (evt) => t.fail('label drag emitted'))
+        .once('label:dragend', (evt) => t.fail('label dragend emitted'));
+
+      mouse.moveTo(470, 280, 0)
+        .wait(500)
+        .down().moveBy(100, 0, 1000).up().wait(500);
+    });
+
+    t.end();
+
   });
 
 

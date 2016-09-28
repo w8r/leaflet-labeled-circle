@@ -161,6 +161,10 @@ var LabeledMarker = L.FeatureGroup.extend({
     var pos  = opts.getLabelPosition(this, this.feature, this._latlng);
     var text = opts.getLabelText(this, this.feature);
 
+    if ('draggable' in opts) {
+      opts.markerOptions.draggable = opts.draggable;
+    }
+
     this._marker = new Circle(text, pos,
       L.Util.extend({
         interactive: this.options.interactive
@@ -207,6 +211,18 @@ var LabeledMarker = L.FeatureGroup.extend({
 
   _onMarkerDragEnd: function(evt) {
     this.fire('label:' + evt.type, evt);
+  },
+
+
+  enableDragging: function () {
+    if (this._marker.dragging) this.dragging.enable();
+    return this;
+  },
+
+
+  disableDragging: function () {
+    if (this._marker.dragging) this.dragging.disable();
+    return this;
   }
 
 });
