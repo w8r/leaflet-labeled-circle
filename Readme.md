@@ -1,4 +1,4 @@
-# Leaflet SVG circle marker with detachable label and text [![npm version](https://badge.fury.io/js/leaflet-labeled-circle.svg)](https://badge.fury.io/js/leaflet-labeled-circle) [![CircleCI](https://circleci.com/gh/w8r/leaflet-labeled-circle/tree/leaflet-1.0.svg?style=svg)](https://circleci.com/gh/w8r/leaflet-labeled-circle/tree/leaflet-1.0)
+# Leaflet SVG circle marker with detachable label and text [![npm version](https://badge.fury.io/js/leaflet-labeled-circle.svg)](https://badge.fury.io/js/leaflet-labeled-circle) [![CircleCI](https://circleci.com/gh/w8r/leaflet-labeled-circle.svg?style=shield)](https://circleci.com/gh/w8r/leaflet-labeled-circle)
 
 ![Screenshot](https://cloud.githubusercontent.com/assets/26884/12513284/5c14608c-c11d-11e5-9465-a3dbdb62cac1.png)
 

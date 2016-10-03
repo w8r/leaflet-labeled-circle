@@ -182,7 +182,7 @@ tape('L.LabeledCircleMarker', (t) => {
       let marker = createMarker(map);
       let center = map.getCenter();
 
-      t.plan(5);
+      t.plan(7);
       const h = new Hand({
         onStop: () => {
           let c = map.getCenter();
@@ -199,6 +199,10 @@ tape('L.LabeledCircleMarker', (t) => {
           t.pass('label dragend emitted');
           let pos = marker.toGeoJSON().properties.labelPosition;
           t.notDeepEqual(pos, labelPos, 'label position changed');
+          t.ok(marker.getLatLng()
+            .equals(marker._line.getLatLngs()[1]), 'endpoint 1');
+          t.ok(marker._marker.getLatLng()
+            .equals(marker._line.getLatLngs()[0]), 'endpoint 2');
         });
 
       mouse.moveTo(470, 280, 0)

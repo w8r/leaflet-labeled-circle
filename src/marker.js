@@ -210,18 +210,19 @@ var LabeledMarker = L.FeatureGroup.extend({
 
 
   _onMarkerDragEnd: function(evt) {
+    this._line.setLatLngs([this._marker.getLatLng(), this._latlng]);
     this.fire('label:' + evt.type, evt);
   },
 
 
   enableDragging: function () {
-    if (this._marker.dragging) this.dragging.enable();
+    if (this._marker.dragging) this._marker.dragging.enable();
     return this;
   },
 
 
   disableDragging: function () {
-    if (this._marker.dragging) this.dragging.disable();
+    if (this._marker.dragging) this._marker.dragging.disable();
     return this;
   }
 
