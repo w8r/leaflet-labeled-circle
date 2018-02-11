@@ -128,7 +128,7 @@ tape('L.LabeledCircleMarker', (t) => {
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [ 114.1452, 22.42658 ] },
       properties: {
-        labelPosition: [ 114.2593452, 22.449006580000002 ],
+        labelPosition: [ 114.259345, 22.449007 ],
         text: 5
       }
     }, 'geojson feature');
@@ -150,24 +150,12 @@ tape('L.LabeledCircleMarker', (t) => {
       }, 'point in collection');
       t.deepEqual(gc.geometry.geometries[1], {
         "type": "LineString",
-        "coordinates": [
-          [
-            114.1452,
-            22.42658
-          ],
-          [
-            114.2593452,
-            22.449006580000002
-          ]
-        ]
+        "coordinates": [ [ 114.1452, 22.42658 ], [ 114.259345, 22.449007 ] ]
       }, 'line string in collection');
 
       t.deepEqual(gc.geometry.geometries[2], {
         "type": "Point",
-        "coordinates": [
-          114.2593452,
-          22.449006580000002
-        ]
+        "coordinates": [ 114.259345, 22.449007 ]
       }, 'label point in collection');
       t.end();
     });
@@ -206,7 +194,7 @@ tape('L.LabeledCircleMarker', (t) => {
         });
 
       mouse.moveTo(470, 280, 0)
-        .wait(500)
+        .wait(3000)
         .down().moveBy(100, 0, 1000).up().wait(500);
     });
 

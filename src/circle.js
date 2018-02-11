@@ -1,6 +1,6 @@
-var L = require('leaflet');
+const L = require('leaflet');
 
-var Circle = module.exports = L.CircleMarker.extend({
+const Circle = L.CircleMarker.extend({
 
   options: {
     textStyle: {
@@ -20,7 +20,7 @@ var Circle = module.exports = L.CircleMarker.extend({
    * @param  {L.LatLng} latlng
    * @param  {Object=}  options
    */
-  initialize: function(text, latlng, options) {
+  initialize(text, latlng, options) {
     /**
      * @type {String}
      */
@@ -49,7 +49,7 @@ var Circle = module.exports = L.CircleMarker.extend({
    * @param {String} text
    * @return {LabeledCircle}
    */
-  setText: function(text) {
+  setText(text) {
     this._text = text;
     if (this._textNode) {
       this._textElement.removeChild(this._textNode);
@@ -64,7 +64,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * @return {String}
    */
-  getText: function () {
+  getText() {
     return this._text;
   },
 
@@ -73,7 +73,7 @@ var Circle = module.exports = L.CircleMarker.extend({
    * Also bring text to front
    * @override
    */
-  bringToFront: function() {
+  bringToFront() {
     L.CircleMarker.prototype.bringToFront.call(this);
     this._groupTextToPath();
   },
@@ -82,7 +82,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * @override
    */
-  bringToBack: function() {
+  bringToBack() {
     L.CircleMarker.prototype.bringToBack.call(this);
     this._groupTextToPath();
   },
@@ -91,11 +91,11 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Put text in the right position in the dom
    */
-  _groupTextToPath: function() {
-    var path        = this._path;
-    var textElement = this._textElement;
-    var next        = path.nextSibling;
-    var parent      = path.parentNode;
+  _groupTextToPath() {
+    const path        = this._path;
+    const textElement = this._textElement;
+    const next        = path.nextSibling;
+    const parent      = path.parentNode;
 
 
     if (textElement && parent) {
@@ -111,7 +111,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Position the text in container
    */
-  _updatePath: function() {
+  _updatePath() {
     L.CircleMarker.prototype._updatePath.call(this);
     this._updateTextPosition();
   },
@@ -120,7 +120,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * @override
    */
-  _transform: function(matrix) {
+  _transform(matrix) {
     L.CircleMarker.prototype._transform.call(this, matrix);
 
     // wrap textElement with a fake layer for renderer
@@ -140,7 +140,7 @@ var Circle = module.exports = L.CircleMarker.extend({
    * @param  {L.Map} map
    * @return {LabeledCircle}
    */
-  onAdd: function(map) {
+  onAdd(map) {
     L.CircleMarker.prototype.onAdd.call(this, map);
     this._initText();
     this._updateTextPosition();
@@ -152,7 +152,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Create and insert text
    */
-  _initText: function() {
+  _initText() {
     this._textElement = L.SVG.create('text');
     this.setText(this._text);
     this._renderer._rootGroup.appendChild(this._textElement);
@@ -162,11 +162,11 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Calculate position for text
    */
-  _updateTextPosition: function() {
-    var textElement = this._textElement;
+  _updateTextPosition() {
+    const textElement = this._textElement;
     if (textElement) {
-      var bbox = textElement.getBBox();
-      var textPosition = this._point.subtract(
+      const bbox = textElement.getBBox();
+      const textPosition = this._point.subtract(
         L.point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2));
 
       textElement.setAttribute('x', textPosition.x);
@@ -179,13 +179,13 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Set text style
    */
-  setStyle: function(style) {
+  setStyle(style) {
     L.CircleMarker.prototype.setStyle.call(this, style);
     if (this._textElement) {
-      var styles = this.options.textStyle;
-      for (var prop in styles) {
+      const styles = this.options.textStyle;
+      for (let prop in styles) {
         if (styles.hasOwnProperty(prop)) {
-          var styleProp = prop;
+          let styleProp = prop;
           if (prop === 'color') {
             styleProp = 'stroke';
           }
@@ -199,7 +199,7 @@ var Circle = module.exports = L.CircleMarker.extend({
   /**
    * Remove text
    */
-  onRemove: function(map) {
+  onRemove(map) {
     if (this._textElement) {
       if (this._textElement.parentNode) {
         this._textElement.parentNode.removeChild(this._textElement);
@@ -215,7 +215,5 @@ var Circle = module.exports = L.CircleMarker.extend({
 });
 
 
-L.TextCircle = Circle;
-L.textCircle = function (text, latlng, options) {
-  return new Circle(text, latlng, options);
-};
+module.exports = L.TextCircle = Circle;
+L.textCircle = (text, latlng, options) => new Circle(text, latlng, options);

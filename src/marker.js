@@ -1,8 +1,8 @@
-var L = require('leaflet');
-var Circle = require('./circle');
+const L = require('leaflet');
+const Circle = require('./circle');
 require('leaflet-path-drag');
 
-var LabeledMarker = L.FeatureGroup.extend({
+const LabeledMarker = L.FeatureGroup.extend({
 
   options: {
 
@@ -11,9 +11,7 @@ var LabeledMarker = L.FeatureGroup.extend({
      * @param  {Object}        feature
      * @return {String}
      */
-    getLabelText: function(marker, feature) {
-      return feature.properties.text;
-    },
+    getLabelText: (marker, feature) => feature.properties.text,
 
     /**
      * @param  {LabeledMarker} marker
@@ -21,7 +19,7 @@ var LabeledMarker = L.FeatureGroup.extend({
      * @param  {L.LatLng}      latlng
      * @return {L.LatLng}
      */
-    getLabelPosition: function(marker, feature, latlng) {
+    getLabelPosition: (marker, feature, latlng) => {
       return feature.properties.labelPosition ?
         L.latLng(feature.properties.labelPosition.slice().reverse()) :
         latlng;
@@ -60,7 +58,7 @@ var LabeledMarker = L.FeatureGroup.extend({
    * @param  {Object=}  feature
    * @param  {Object=}  options
    */
-  initialize: function(latlng, feature, options) {
+  initialize(latlng, feature, options) {
     L.Util.setOptions(this, options);
 
     /**
@@ -112,7 +110,7 @@ var LabeledMarker = L.FeatureGroup.extend({
   /**
    * @return {L.LatLng}
    */
-  getLabelPosition: function() {
+  getLabelPosition() {
     return this._marker.getLatLng();
   },
 
@@ -120,7 +118,7 @@ var LabeledMarker = L.FeatureGroup.extend({
   /**
    * @return {L.LatLng}
    */
-  getLatLng: function() {
+  getLatLng() {
     return this._latlng;
   },
 
@@ -129,8 +127,8 @@ var LabeledMarker = L.FeatureGroup.extend({
    * Serialize
    * @return {Object}
    */
-  toGeoJSON: function(geometryCollection) {
-    var feature = L.GeoJSON.getFeature(this, {
+  toGeoJSON(geometryCollection) {
+    const feature = L.GeoJSON.getFeature(this, {
       type: 'Point',
       coordinates: L.GeoJSON.latLngToCoords(this._anchor.getLatLng())
     });
@@ -147,7 +145,7 @@ var LabeledMarker = L.FeatureGroup.extend({
    * @param {String} text
    * @return {LabeledMarker}
    */
-  setText: function(text) {
+  setText(text) {
     this._marker.setText(text);
     return this;
   },
@@ -156,10 +154,10 @@ var LabeledMarker = L.FeatureGroup.extend({
   /**
    * Creates anchor, line and label
    */
-  _createLayers: function() {
-    var opts = this.options;
-    var pos  = opts.getLabelPosition(this, this.feature, this._latlng);
-    var text = opts.getLabelText(this, this.feature);
+  _createLayers() {
+    const opts = this.options;
+    const pos  = opts.getLabelPosition(this, this.feature, this._latlng);
+    const text = opts.getLabelText(this, this.feature);
 
     if ('draggable' in opts) {
       opts.markerOptions.draggable = opts.draggable;
@@ -189,7 +187,7 @@ var LabeledMarker = L.FeatureGroup.extend({
    * Store shift to be precise while dragging
    * @param  {Event} evt
    */
-  _onMarkerDragStart: function(evt) {
+  _onMarkerDragStart(evt) {
     this._initialDistance = L.DomEvent.getMousePosition(evt)
       .subtract(this._map.latLngToContainerPoint(this._marker.getLatLng()));
     this.fire('label:' + evt.type, evt);
@@ -201,27 +199,27 @@ var LabeledMarker = L.FeatureGroup.extend({
    * Line dragging
    * @param  {DragEvent} evt
    */
-  _onMarkerDrag: function(evt) {
-    var latlng = this._map.containerPointToLatLng(
+  _onMarkerDrag(evt) {
+    const latlng = this._map.containerPointToLatLng(
       L.DomEvent.getMousePosition(evt)._subtract(this._initialDistance));
     this._line.setLatLngs([latlng, this._latlng]);
     this.fire('label:' + evt.type, evt);
   },
 
 
-  _onMarkerDragEnd: function(evt) {
+  _onMarkerDragEnd(evt) {
     this._line.setLatLngs([this._marker.getLatLng(), this._latlng]);
     this.fire('label:' + evt.type, evt);
   },
 
 
-  enableDragging: function () {
+  enableDragging() {
     if (this._marker.dragging) this._marker.dragging.enable();
     return this;
   },
 
 
-  disableDragging: function () {
+  disableDragging() {
     if (this._marker.dragging) this._marker.dragging.disable();
     return this;
   }
@@ -236,13 +234,13 @@ var LabeledMarker = L.FeatureGroup.extend({
  */
 function toGeometryCollection(feature, key) {
   key = key || 'labelPosition';
-  var anchorPos = feature.geometry.coordinates.slice();
-  var labelPos  = feature.properties[key];
+  const anchorPos = feature.geometry.coordinates.slice();
+  let labelPos  = feature.properties[key];
 
   if (!labelPos) throw new Error('No label position set');
 
   labelPos = labelPos.slice();
-  var geometries = [{
+  const geometries = [{
     type: 'Point',
     coordinates: anchorPos
   }, {
@@ -274,7 +272,9 @@ function toGeometryCollection(feature, key) {
 
 LabeledMarker.toGeometryCollection = toGeometryCollection;
 
-module.exports = L.LabeledCircleMarker = LabeledMarker;
-L.labeledCircleMarker = function(latlng, feature, options) {
+L.LabeledCircleMarker = LabeledMarker;
+L.labeledCircleMarker = (latlng, feature, options) => {
   return new LabeledMarker(latlng, feature, options);
 };
+
+module.exports = LabeledMarker;
