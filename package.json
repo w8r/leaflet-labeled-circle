@@ -1,6 +1,6 @@
 {
   "name": "leaflet-labeled-circle",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
   "main": "index.js",
   "scripts": {
@@ -58,15 +58,15 @@
     "browserify-shim": "^3.8.14",
     "eslint": "^3.4.0",
     "faucet": "0.0.1",
-    "http-server": "^0.9.0",
-    "leaflet": "^1.3.1",
-    "nodemon": "^1.10.2",
+    "http-server": "^0.11.1",
+    "leaflet": "^1.5.1",
+    "nodemon": "^1.19.4",
     "prosthetic-hand": "^1.3.1",
-    "smokestack": "^3.4.1",
+    "smokestack": "^3.6.0",
     "tap-closer": "^1.0.0",
     "tap-status": "^1.0.1",
     "tape": "^4.8.0",
     "uglify-js": "^3.3.10",
-    "watchify": "^3.10.0"
+    "watchify": "^3.11.1"
   }
 }

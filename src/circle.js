@@ -144,7 +144,7 @@ const Circle = L.CircleMarker.extend({
     L.CircleMarker.prototype.onAdd.call(this, map);
     this._initText();
     this._updateTextPosition();
-    this.setStyle();
+    this.setStyle({});
     return this;
   },
 
