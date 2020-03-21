@@ -1,6 +1,6 @@
 {
   "name": "leaflet-labeled-circle",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Special type of SVG marker with a label inside and draggable around the anchor point",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,7 @@
         "babelify",
         {
           "presets": [
-            "es2015"
+            "@babel/env"
           ]
         }
       ]
@@ -51,21 +51,23 @@
     "leaflet-path-drag": "^1.0.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-core": "^6.26.3",
     "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.0.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.0",
     "browserify-shim": "^3.8.14",
     "eslint": "^4.18.2",
     "faucet": "0.0.1",
-    "http-server": "^0.11.1",
-    "leaflet": "^1.5.1",
-    "nodemon": "^1.19.4",
+    "http-server": "^0.12.1",
+    "leaflet": "^1.6.0",
+    "nodemon": "^2.0.2",
     "prosthetic-hand": "^1.3.1",
     "smokestack": "^3.6.0",
     "tap-closer": "^1.0.0",
     "tap-status": "^1.0.1",
-    "tape": "^4.8.0",
+    "tape": "^4.13.2",
     "uglify-js": "^3.3.10",
     "watchify": "^3.11.1"
   }
