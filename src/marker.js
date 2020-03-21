@@ -1,6 +1,6 @@
-const L = require('leaflet');
-const Circle = require('./circle');
-require('leaflet-path-drag');
+import L from 'leaflet';
+import { Circle } from './circle';
+import 'leaflet-path-drag';
 
 const LabeledMarker = L.FeatureGroup.extend({
 
@@ -45,7 +45,6 @@ const LabeledMarker = L.FeatureGroup.extend({
       lineCap: 'square',
       weight: 2
     }
-
   },
 
 
@@ -277,4 +276,4 @@ L.labeledCircleMarker = (latlng, feature, options) => {
   return new LabeledMarker(latlng, feature, options);
 };
 
-module.exports = LabeledMarker;
+export default LabeledMarker;

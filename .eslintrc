@@ -8,6 +8,10 @@
     "require": true,
     "module": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
   "rules": {
     "yoda": 0,
     "block-scoped-var": 2,

@@ -1,6 +1,6 @@
-const L = require('leaflet');
+import L from 'leaflet';
 
-const Circle = L.CircleMarker.extend({
+export const Circle = L.CircleMarker.extend({
 
   options: {
     textStyle: {
@@ -213,7 +213,4 @@ const Circle = L.CircleMarker.extend({
   }
 
 });
-
-
-module.exports = L.TextCircle = Circle;
-L.textCircle = (text, latlng, options) => new Circle(text, latlng, options);
+export const textCircle = (text, latlng, options) => new Circle(text, latlng, options);

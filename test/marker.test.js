@@ -142,20 +142,20 @@ tape('L.LabeledCircleMarker', (t) => {
       t.equal(gc.geometry.type, 'GeometryCollection', 'correct geometry type');
       t.equal(gc.geometry.geometries.length, 4, 'geometries count');
       t.deepEqual(gc.geometry.geometries[0], {
-        "type": "Point",
-        "coordinates": [
+        'type': 'Point',
+        'coordinates': [
           114.1452,
           22.42658
         ]
       }, 'point in collection');
       t.deepEqual(gc.geometry.geometries[1], {
-        "type": "LineString",
-        "coordinates": [ [ 114.1452, 22.42658 ], [ 114.259345, 22.449007 ] ]
+        'type': 'LineString',
+        'coordinates': [ [ 114.1452, 22.42658 ], [ 114.259345, 22.449007 ] ]
       }, 'line string in collection');
 
       t.deepEqual(gc.geometry.geometries[2], {
-        "type": "Point",
-        "coordinates": [ 114.259345, 22.449007 ]
+        'type': 'Point',
+        'coordinates': [ 114.259345, 22.449007 ]
       }, 'label point in collection');
       t.end();
     });

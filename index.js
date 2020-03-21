@@ -5,4 +5,5 @@
  * @license MIT
  * @preserve
  */
-module.exports = require('./src/marker');
+import Marker from './src/marker';
+export default Marker;
