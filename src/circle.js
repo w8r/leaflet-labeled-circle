@@ -99,10 +99,10 @@ const Circle = L.CircleMarker.extend({
 
 
     if (textElement && parent) {
-      if (next && next !== textElement) {
-        parent.insertBefore(textElement, next);
+      if( parent.insertAfter ){
+        parent.insertAfter(path, textElement)
       } else {
-        parent.appendChild(textElement);
+        parent.insertBefore(textElement, next);
       }
     }
   },
