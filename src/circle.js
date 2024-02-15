@@ -100,7 +100,7 @@ const Circle = L.CircleMarker.extend({
 
     if (textElement && parent) {
       if( parent.insertAfter ){
-        parent.insertAfter(path, textElement)
+        parent.insertAfter(path, textElement);
       } else {
         parent.insertBefore(textElement, next);
       }
@@ -165,7 +165,7 @@ const Circle = L.CircleMarker.extend({
   _updateTextPosition() {
     const textElement = this._textElement;
     if (textElement) {
-      const bbox = textElement.getBBox();
+      const bbox = textElement.getBBox({ stroke: true, markers: true });
       const textPosition = this._point.subtract(
         L.point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2));
 
