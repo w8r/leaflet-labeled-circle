@@ -1,30 +1,68 @@
-const L = require('leaflet');
+import {
+  CircleMarker,
+  point,
+  type LatLng,
+  type Map,
+  SVG,
+  CircleMarkerOptions,
+} from "leaflet";
+import "leaflet-path-drag";
 
-const Circle = L.CircleMarker.extend({
+type RGB = `rgb(${number}, ${number}, ${number})`;
+type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
+type HEX = `#${string}`;
 
+type Color = RGB | RGBA | HEX | string;
+
+interface TextStyle {
+  color: Color;
+  fontSize: number;
+  fontWeight:
+    | "normal"
+    | "bold"
+    | "bolder"
+    | "lighter"
+    | 900
+    | 800
+    | 700
+    | 600
+    | 500
+    | 400
+    | 300
+    | 200
+    | 100;
+}
+
+export interface LabeledCircleMarkerOptions extends CircleMarkerOptions {
+  textStyle?: Partial<TextStyle>;
+  shiftY?: number;
+}
+
+interface CircleClass extends CircleMarker {}
+
+export const Circle: new (
+  text: string,
+  latlng: LatLng,
+  options: LabeledCircleMarkerOptions
+) => CircleClass = CircleMarker.extend({
   options: {
     textStyle: {
-      color: '#fff',
+      color: "#fff",
       fontSize: 12,
-      fontWeight: 300
+      fontWeight: 300,
     },
     shiftY: 7,
   },
 
-
-  /**
-   * @class LabeledCircle
-   * @constructor
-   * @extends {L.CircleMarker}
-   * @param  {String}   text
-   * @param  {L.LatLng} latlng
-   * @param  {Object=}  options
-   */
-  initialize(text, latlng, options) {
+  initialize(
+    text: string,
+    latlng: LatLng,
+    options: LabeledCircleMarkerOptions
+  ) {
     /**
      * @type {String}
      */
-    this._text        = text;
+    this._text = text;
 
     /**
      * @type {SVGTextElement}
@@ -34,22 +72,18 @@ const Circle = L.CircleMarker.extend({
     /**
      * @type {TextNode}
      */
-    this._textNode    = null;
+    this._textNode = null;
 
     /**
      * @type {Object|Null}
      */
-    this._textLayer   = null;
+    this._textLayer = null;
 
-    L.CircleMarker.prototype.initialize.call(this, latlng, options);
+    // @ts-expect-error
+    CircleMarker.prototype.initialize.call(this, latlng, options);
   },
 
-
-  /**
-   * @param {String} text
-   * @return {LabeledCircle}
-   */
-  setText(text) {
+  setText(text: string) {
     this._text = text;
     if (this._textNode) {
       this._textElement.removeChild(this._textNode);
@@ -60,46 +94,40 @@ const Circle = L.CircleMarker.extend({
     return this;
   },
 
-
-  /**
-   * @return {String}
-   */
   getText() {
     return this._text;
   },
-
 
   /**
    * Also bring text to front
    * @override
    */
   bringToFront() {
-    L.CircleMarker.prototype.bringToFront.call(this);
+    CircleMarker.prototype.bringToFront.call(this);
     this._groupTextToPath();
+    return this;
   },
-
 
   /**
    * @override
    */
   bringToBack() {
-    L.CircleMarker.prototype.bringToBack.call(this);
+    CircleMarker.prototype.bringToBack.call(this);
     this._groupTextToPath();
+    return this;
   },
-
 
   /**
    * Put text in the right position in the dom
    */
   _groupTextToPath() {
-    const path        = this._path;
+    const path = this._path;
     const textElement = this._textElement;
-    const next        = path.nextSibling;
-    const parent      = path.parentNode;
-
+    const next = path.nextSibling;
+    const parent = path.parentNode;
 
     if (textElement && parent) {
-      if( parent.insertAfter ){
+      if (parent.insertAfter) {
         parent.insertAfter(path, textElement);
       } else {
         parent.insertBefore(textElement, next);
@@ -107,21 +135,21 @@ const Circle = L.CircleMarker.extend({
     }
   },
 
-
   /**
    * Position the text in container
    */
   _updatePath() {
-    L.CircleMarker.prototype._updatePath.call(this);
+    // @ts-expect-error
+    CircleMarker.prototype._updatePath.call(this);
     this._updateTextPosition();
   },
-
 
   /**
    * @override
    */
-  _transform(matrix) {
-    L.CircleMarker.prototype._transform.call(this, matrix);
+  _transform(matrix: [number, number, number, number, number, number]) {
+    // @ts-expect-error
+    CircleMarker.prototype._transform.call(this, matrix);
 
     // wrap textElement with a fake layer for renderer
     // to be able to transform it
@@ -135,29 +163,26 @@ const Circle = L.CircleMarker.extend({
     }
   },
 
-
   /**
    * @param  {L.Map} map
    * @return {LabeledCircle}
    */
-  onAdd(map) {
-    L.CircleMarker.prototype.onAdd.call(this, map);
+  onAdd(map: Map) {
+    CircleMarker.prototype.onAdd.call(this, map);
     this._initText();
     this._updateTextPosition();
     this.setStyle({});
     return this;
   },
 
-
   /**
    * Create and insert text
    */
   _initText() {
-    this._textElement = L.SVG.create('text');
+    this._textElement = SVG.create("text");
     this.setText(this._text);
     this._renderer._rootGroup.appendChild(this._textElement);
   },
-
 
   /**
    * Calculate position for text
@@ -167,27 +192,27 @@ const Circle = L.CircleMarker.extend({
     if (textElement) {
       const bbox = textElement.getBBox({ stroke: true, markers: true });
       const textPosition = this._point.subtract(
-        L.point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2));
+        point(bbox.width, -bbox.height + this.options.shiftY).divideBy(2)
+      );
 
-      textElement.setAttribute('x', textPosition.x);
-      textElement.setAttribute('y', textPosition.y);
+      textElement.setAttribute("x", textPosition.x);
+      textElement.setAttribute("y", textPosition.y);
       this._groupTextToPath();
     }
   },
 
-
   /**
    * Set text style
    */
-  setStyle(style) {
-    L.CircleMarker.prototype.setStyle.call(this, style);
+  setStyle(style: TextStyle) {
+    CircleMarker.prototype.setStyle.call(this, style);
     if (this._textElement) {
       const styles = this.options.textStyle;
       for (let prop in styles) {
         if (styles.hasOwnProperty(prop)) {
           let styleProp = prop;
-          if (prop === 'color') {
-            styleProp = 'stroke';
+          if (prop === "color") {
+            styleProp = "stroke";
           }
           this._textElement.style[styleProp] = styles[prop];
         }
@@ -195,11 +220,10 @@ const Circle = L.CircleMarker.extend({
     }
   },
 
-
   /**
    * Remove text
    */
-  onRemove(map) {
+  onRemove(map: Map) {
     if (this._textElement) {
       if (this._textElement.parentNode) {
         this._textElement.parentNode.removeChild(this._textElement);
@@ -209,11 +233,12 @@ const Circle = L.CircleMarker.extend({
       this._textLayer = null;
     }
 
-    return L.CircleMarker.prototype.onRemove.call(this, map);
-  }
-
+    return CircleMarker.prototype.onRemove.call(this, map);
+  },
 });
 
-
-module.exports = L.TextCircle = Circle;
-L.textCircle = (text, latlng, options) => new Circle(text, latlng, options);
+export const textCircle = (
+  text: string,
+  latlng: LatLng,
+  options: LabeledCircleMarkerOptions
+) => new Circle(text, latlng, options);

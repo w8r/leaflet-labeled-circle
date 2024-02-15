@@ -5,4 +5,4 @@
  * @license MIT
  * @preserve
  */
-module.exports = require('./src/marker');
+export { LabeledCircleMarker, labeledCircleMarker } from "./marker";
